@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1056160119836",
+    "firebase_url": "https://stalk-e3c58.firebaseio.com",
+    "project_id": "stalk-e3c58",
+    "storage_bucket": "stalk-e3c58.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1056160119836:android:f8b15ff34e4b11cf",
+        "android_client_info": {
+          "package_name": "com.sandy.stalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1056160119836-9k7tn0apo5qpsjeeqeugibv3mqq6ftdp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sandy.stalk",
+            "certificate_hash": "3664f6ffffa6330d38c6a903bc83b2cf6b0d1282"
+          }
+        },
+        {
+          "client_id": "1056160119836-o8o1t136hih2cs8kt71t6g3d9lvcipgu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLqD4mqmI6UoBXzkGvRUwD2k81bxSN32Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1056160119836-o8o1t136hih2cs8kt71t6g3d9lvcipgu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
