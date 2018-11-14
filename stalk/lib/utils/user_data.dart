@@ -1,7 +1,7 @@
 class User {
   final String displayName;
   final String photoUrl;
-  final String email;
+  final String phoneNo;
   final String uid;
-  User({this.displayName,this.email,this.photoUrl,this.uid});
+  User({this.displayName,this.phoneNo,this.photoUrl,this.uid});
 }

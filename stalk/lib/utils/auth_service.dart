@@ -1,57 +1,52 @@
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:async';
 import 'dart:io';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSingIn = new GoogleSignIn();
 
-  Future<FirebaseUser> signInWithGoogle() async {
-    GoogleSignInAccount currentUser = _googleSingIn.currentUser;
-    if (currentUser == null) {
-      currentUser = await _googleSingIn.signInSilently();
-    }
-    if (currentUser == null) {
-      currentUser = await _googleSingIn.signIn();
-    }
-    GoogleSignInAuthentication currentAuth = await currentUser.authentication;
-
-    final FirebaseUser user = await _auth.signInWithGoogle(
-      idToken: currentAuth.idToken,
-      accessToken: currentAuth.accessToken,
-    );
-    return user;
+  static AuthService instance = new AuthService._internal();
+  AuthService._internal();
+  factory AuthService(){
+    return instance;
   }
 
-  Future<Null> signOutWithGoogle() async {
-    await _auth.signOut();
-    await _googleSingIn.signOut();
-  }
-
-  Future<Null> saveDetailsToFirebase(FirebaseUser user) async {
+  Future<Null> saveDetailsToFirebase(var user) async {
     if (user != null) {
       // check is already signup
       final QuerySnapshot result = await Firestore.instance
           .collection("users")
           .where(
-            'uid',
-            isEqualTo: user.uid,
+            'phoneNo',
+            isEqualTo: user.phoneNo,
           )
           .getDocuments();
 
       if (result.documents.length == 0) {
         //update data to server if new user
-        Firestore.instance.collection("users").document(user.uid).setData(
+        Firestore.instance.collection("users").document(user.phoneNo).setData(
           {
             'displayName': user.displayName,
             "photoUrl": user.photoUrl,
             "uid": user.uid,
+            "phoneNo": user.phoneNo,
           },
         );
       }
+    }
+  }
+
+  Future<Null> updateUserDetailsToFirebase(String phn,
+      {String displayName, String photoUrl, String uid, String phoneNo}) async {
+    Map<String, String> newDetails = new Map<String, String>();
+    if (displayName != null) newDetails['displayName'] = displayName;
+    if (photoUrl != null) newDetails['photoUrl'] = photoUrl;
+    if (uid != null) newDetails['uid'] = uid;
+    if (phoneNo != null) newDetails['phoneNo'] = phoneNo;
+
+    if (newDetails.length > 0) {
+      Firestore.instance.collection("users").document(phn).setData(newDetails);
     }
   }
 
@@ -107,4 +102,20 @@ class AuthService {
       });
     }
   }
+
+  static Future<String> getAppVersion() async {
+    QuerySnapshot result = await Firestore.instance
+    .collection('version').getDocuments();
+    String ver = result.documents[0]['app-version'];
+    return ver;
+  }
+
+  Future<FirebaseUser> checkExistance(String phoneNo) async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    if(user != null && user.phoneNumber == phoneNo)
+      return user;
+    else
+      return null;
+  }
+
 }

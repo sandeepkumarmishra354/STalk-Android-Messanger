@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'dart:async';
 
 class Connection {
   ConnectivityResult _connectivityResult;
@@ -21,4 +22,10 @@ class Connection {
       return false;
     }
   }
+
+  Future<bool> isOnline() async {
+    await refresh();
+    return isNetworkAvailable();
+  }
+
 }

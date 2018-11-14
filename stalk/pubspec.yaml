@@ -15,17 +15,29 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  #image_cropper: ^0.0.8
   shared_preferences: ">=0.4.2"
   cloud_firestore: ^0.7.3
   firebase_auth: ^0.5.20
-  google_sign_in: ^3.0.5
   firebase_storage: ^1.0.2
-  cached_network_image: "^0.4.1"
-  intl: ^0.15.7
-  font_awesome_flutter: ^8.0.1
+  path_provider: ^0.4.1
   connectivity: ^0.3.2
+  country_code_picker: ^1.0.2
+  contacts_service: ^0.0.8
+  simple_permissions: ^0.1.8
+  photo_view: ^0.0.10
+  fluttertoast: ^2.0.9
+  package_info: ^0.3.2
+  url_launcher: ^4.0.1
+  dio: ^1.0.6
+  flutter_socket_io: ^0.4.3
+  cookie_jar: ^0.0.6
+  event_bus: ^1.0.1
+  badge: any
   vibrate:
   image_picker:
+  socket_flutter_plugin:
+  cached_network_image:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -34,7 +46,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -51,8 +62,7 @@ flutter:
   assets:
     - images/logo.png
     - images/pen.jpg
-    - images/pen4.jpg
-    - images/pen5.jpg
+    - images/not-found.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

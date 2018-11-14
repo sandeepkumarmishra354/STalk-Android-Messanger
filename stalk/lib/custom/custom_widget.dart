@@ -1,6 +1,9 @@
+import 'dart:ui' as ui;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../utils/enums.dart';
+import '../data/constants.dart' as Constants;
 
 class CustomWidget {
   static final ThemeData theme = new ThemeData(
@@ -10,6 +13,12 @@ class CustomWidget {
     errorColor: new Color(hexToInt("ffE71C23")),
     cursorColor: new Color(hexToInt("ff0A3D62")),
     scaffoldBackgroundColor: Colors.white,
+    indicatorColor: Colors.white,
+    pageTransitionsTheme: const PageTransitionsTheme(
+        builders: <TargetPlatform, PageTransitionsBuilder>{
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: OpenUpwardsPageTransitionsBuilder(),
+        }),
   );
 
   static createButton(String txt, var callback) {
@@ -33,12 +42,13 @@ class CustomWidget {
     );
   }
 
-  static sTalkLogo() {
+  static sTalkLogo({double width: 200.0, double height}) {
     return Center(
       child: new Image(
-        width: 200.0,
+        width: width,
+        height: height,
         semanticLabel: "STalk",
-        image: new AssetImage('images/logo.png'),
+        image: new AssetImage(Constants.logoImage),
       ),
     );
   }
@@ -54,6 +64,7 @@ class CustomWidget {
 
   static flatBtn(String txt, {Color color, var callback}) {
     return new FlatButton(
+      disabledTextColor: Colors.grey,
       child: new Text(
         txt,
         style: new TextStyle(color: color),
@@ -82,7 +93,7 @@ class CustomWidget {
     return val;
   }
 
-  static loginButton({var callback}) {
+  static loginButton({var callback, String txt}) {
     return new Container(
       margin: const EdgeInsets.only(right: 75.0, left: 75.0),
       child: new RaisedButton(
@@ -92,10 +103,10 @@ class CustomWidget {
           bottom: 13.0,
         ),
         child: new Text(
-          "Sign In With Google",
+          txt,
           style: new TextStyle(fontSize: 18.0),
         ),
-        color: new Color(hexToInt("ffAE1438")),
+        color: Colors.blueAccent,
         onPressed: callback,
       ),
     );
@@ -121,11 +132,113 @@ class CustomWidget {
     );
   }
 
-  static showSnackbarMessage({BuildContext context,String msg}) async {
-    var snb = new SnackBar(
-      content: new Text(msg),
+  static Widget imageWidgetAsync(String phoneNo, {var onTap}) {
+    return new Material(
+      child: new StreamBuilder(
+          stream: Firestore.instance
+              .collection('users')
+              .document(phoneNo)
+              .snapshots(),
+          builder: (context, ss) {
+            if (ss.hasData) {
+              return new Material(
+                shape: CircleBorder(),
+                color: Colors.transparent,
+                child: new Ink.image(
+                  fit: BoxFit.cover,
+                  width: 45.0,
+                  height: 45.0,
+                  image: CachedNetworkImageProvider(ss.data['photoUrl']),
+                  child: new InkWell(
+                    onTap: onTap,
+                    child: null,
+                  ),
+                ),
+              );
+            } else
+              return new CircularProgressIndicator();
+          }),
+      borderRadius: BorderRadius.all(Radius.circular(25.0)),
     );
-    Scaffold.of(context).showSnackBar(snb);
   }
 
+  static createBluredBackground(String imgUrl, {int mode: 0}) {
+    return new Container(
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: (mode == 0)
+              ? new AssetImage(imgUrl)
+              : new CachedNetworkImageProvider(imgUrl),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: new BackdropFilter(
+        filter: new ui.ImageFilter.blur(sigmaX: 6.0, sigmaY: 6.0),
+        child: new Container(
+          decoration: new BoxDecoration(
+            color: Colors.black.withOpacity(0.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static loading({Color color}) {
+    return new FlatButton(
+      child: new CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(color),
+      ),
+      onPressed: null,
+    );
+  }
+
+  static createInputField(
+    String labelText, {
+    TextEditingController controller,
+    TextInputType keyboardType,
+    bool secureText: false,
+    void onComplete(),
+    void onSubmitted(String s),
+    void onSaved(String s),
+    void onChanged(String s),
+    String validator(String s),
+    InputType type: InputType.NORMAL,
+  }) {
+    Widget inputField = (type == InputType.FORM)
+        ? new TextFormField(
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: secureText,
+            validator: validator,
+            decoration: new InputDecoration(
+              hintText: labelText,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(12.0),
+            ),
+            onEditingComplete: onComplete,
+            onFieldSubmitted: onSubmitted,
+            onSaved: onSaved,
+          )
+        : new TextField(
+            controller: controller,
+            keyboardType: keyboardType,
+            obscureText: secureText,
+            decoration: new InputDecoration(
+              hintText: labelText,
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.all(12.0),
+            ),
+            onEditingComplete: onComplete,
+            onSubmitted: onSubmitted,
+            onChanged: onChanged,
+          );
+
+    return new Container(
+      child: inputField,
+      decoration: new BoxDecoration(
+        color: new Color(hexToInt("80FFFFFF")),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+    );
+  }
 }
